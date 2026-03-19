@@ -97,7 +97,7 @@ export function QuizScreen({
         />
 
         {/* Below image: name (feedback) or hint (playing) — fixed 50px slot */}
-        <div className="h-[50px] flex items-start justify-center w-full">
+        <div className="h-[50px] flex items-start justify-center w-full overflow-hidden shrink-0">
           {isFeedback && (
             <span className="text-sm font-bold">
               {formatPokemonName(pokemon)}

@@ -69,8 +69,7 @@ export default function Page() {
 
   const handleRetry = useCallback(async () => {
     if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
-    dispatch({ type: "RESTART" });
-    // Start new game immediately
+    // Skip idle state — go directly to loading then playing
     dispatch({ type: "START_LOADING" });
     const pokemon = await getRandomPokemon(5);
     dispatch({ type: "START_GAME", quizPokemon: pokemon, choicePool: pokemon });
