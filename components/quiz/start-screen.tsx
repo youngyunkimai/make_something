@@ -17,7 +17,7 @@ interface StartScreenProps {
 export function StartScreen({ onStart, loading }: StartScreenProps) {
   return (
     <GameFrame>
-      <BattleField className="min-h-[280px] gap-4">
+      <BattleField className="flex-1 gap-4">
         <div className="flex gap-3 items-end">
           <div className="w-12 h-12 bg-foreground rounded-lg" />
           <div className="w-16 h-[72px] bg-foreground rounded-xl" />

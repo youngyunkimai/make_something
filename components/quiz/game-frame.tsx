@@ -31,7 +31,7 @@ export function BattleField({
   return (
     <div
       className={cn(
-        "bg-muted flex-1 relative flex flex-col items-center justify-center gap-3 p-4 overflow-y-auto",
+        "bg-muted relative flex flex-col items-center justify-center gap-3 p-4 overflow-y-auto",
         className
       )}
     >
@@ -49,7 +49,7 @@ export function MenuPanel({
 }) {
   return (
     <div
-      className={cn("border-t-3 border-foreground bg-card p-4 shrink-0", className)}
+      className={cn("border-t-3 border-foreground bg-card p-4", className)}
     >
       {children}
     </div>

@@ -65,28 +65,28 @@ export function QuizScreen({
 
   return (
     <GameFrame>
-      <BattleField>
-        {/* Top status bar */}
-        <div className="w-full flex items-center justify-between px-2 pt-1">
-          <StatusBox className="flex items-center gap-2">
-            <span className="text-xs font-bold">
-              {questionNumber} / {totalQuestions}
-            </span>
-            <ProgressDots total={totalQuestions} filled={questionNumber} />
-          </StatusBox>
+      {/* Top status bar — fixed at top */}
+      <div className="w-full flex items-center justify-between px-4 py-2 bg-muted shrink-0 border-b border-border">
+        <StatusBox className="flex items-center gap-2 py-1 px-2">
+          <span className="text-xs font-bold">
+            {questionNumber} / {totalQuestions}
+          </span>
+          <ProgressDots total={totalQuestions} filled={questionNumber} />
+        </StatusBox>
 
-          <StatusBox className="text-right">
-            <div className="flex items-center gap-2">
-              <ComboDisplay combo={combo} />
-              <span className="text-sm font-bold">{score}점</span>
-            </div>
-            <ScoreBar
-              percentage={(score / (totalQuestions * 100)) * 100}
-              className="mt-1 w-[100px]"
-            />
-          </StatusBox>
-        </div>
+        <StatusBox className="text-right py-1 px-2">
+          <div className="flex items-center gap-2">
+            <ComboDisplay combo={combo} />
+            <span className="text-sm font-bold">{score}점</span>
+          </div>
+          <ScoreBar
+            percentage={(score / (totalQuestions * 100)) * 100}
+            className="mt-1 w-[80px]"
+          />
+        </StatusBox>
+      </div>
 
+      <BattleField className="h-[280px] flex-none">
         {/* Pokemon silhouette/image */}
         <SilhouetteImage
           src={pokemon.imageUrl}
@@ -109,7 +109,7 @@ export function QuizScreen({
 
       <PokeballDivider />
 
-      <MenuPanel>
+      <MenuPanel className="flex-1 overflow-y-auto">
         {/* Feedback message */}
         {isFeedback && (
           <TextBox className="mb-3">
