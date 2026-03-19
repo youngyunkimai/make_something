@@ -31,7 +31,7 @@ export function BattleField({
   return (
     <div
       className={cn(
-        "bg-muted relative flex flex-col items-center justify-center gap-3 p-4 overflow-y-auto",
+        "bg-muted relative flex flex-col items-center justify-center gap-3 p-4 overflow-hidden",
         className
       )}
     >

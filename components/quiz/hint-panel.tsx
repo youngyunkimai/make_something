@@ -10,22 +10,33 @@ interface HintPanelProps {
   hintLevel: number;
 }
 
+const BASE_SCORE = 100;
+
 export function HintPanel({ pokemon, hintLevel }: HintPanelProps) {
   if (hintLevel === 0) return null;
 
   const availableScore = getAvailableScore(hintLevel);
-  const typeText = pokemon.types.map((t) => getTypeNameKo(t)).join("/") + " 타입";
+  const penalty = BASE_SCORE - availableScore;
+  const typeText = pokemon.types.map((t) => getTypeNameKo(t)).join(" / ") + " 타입";
 
   return (
-    <div className="text-xs flex items-center gap-3 px-3 py-1 rounded-md bg-card/80 border border-border max-w-[280px] w-full">
-      <span className="font-bold shrink-0">{typeText}</span>
+    <div className="flex flex-col items-center gap-1 w-full max-w-[300px]">
+      {/* Type hint — always shown */}
+      <span className="text-sm font-bold">{typeText}</span>
+
+      {/* Dex number — level 2+ */}
       {hintLevel >= 2 && (
-        <span className="text-muted-foreground shrink-0">
+        <span className="text-sm text-muted-foreground">
           도감번호: {formatDexNumber(pokemon.id)}
         </span>
       )}
-      <span className="text-muted-foreground ml-auto shrink-0">
-        {availableScore}점
+
+      {/* Score: show penalty */}
+      <span className="text-xs text-muted-foreground">
+        <span className="line-through">{BASE_SCORE}</span>
+        {" → "}
+        <span className="font-bold text-foreground">{availableScore}점</span>
+        <span className="text-red-500 ml-1">-{penalty}</span>
       </span>
     </div>
   );
