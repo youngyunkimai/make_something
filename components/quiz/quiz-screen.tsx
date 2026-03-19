@@ -86,8 +86,9 @@ export function QuizScreen({
         </StatusBox>
       </div>
 
-      {/* Battle field — pokemon image area, larger */}
-      <BattleField className="h-[320px] flex-none">
+      {/* Battle field — pokemon image area, fixed layout */}
+      <BattleField className="h-[320px] flex-none justify-start pt-6">
+        {/* Image — fixed position */}
         <SilhouetteImage
           src={pokemon.imageUrl}
           pokemonName={formatPokemonName(pokemon)}
@@ -95,17 +96,17 @@ export function QuizScreen({
           className="w-[220px] h-[220px]"
         />
 
-        {/* Pokemon name (shown on feedback) */}
-        {isFeedback && (
-          <span className="text-sm font-bold">
-            {formatPokemonName(pokemon)}
-          </span>
-        )}
-
-        {/* Hint text display */}
-        {!isFeedback && (
-          <HintPanel pokemon={pokemon} hintLevel={hintLevel} />
-        )}
+        {/* Below image: name (feedback) or hint (playing) — fixed 50px slot */}
+        <div className="h-[50px] flex items-start justify-center w-full">
+          {isFeedback && (
+            <span className="text-sm font-bold">
+              {formatPokemonName(pokemon)}
+            </span>
+          )}
+          {!isFeedback && (
+            <HintPanel pokemon={pokemon} hintLevel={hintLevel} />
+          )}
+        </div>
       </BattleField>
 
       <PokeballDivider />
