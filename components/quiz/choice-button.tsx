@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Check, X, Circle } from "lucide-react";
+import { Check, X } from "lucide-react";
 import type { Pokemon } from "@/lib/pokemon";
 
 export type ChoiceState = "idle" | "correct" | "wrong" | "disabled";
@@ -34,9 +34,9 @@ export function ChoiceButton({
         state === "idle" &&
           "border-border bg-card hover:border-foreground hover:bg-accent cursor-pointer",
         state === "correct" &&
-          "border-primary bg-primary/10 ring-2 ring-primary/30 scale-[1.03]",
+          "border-green-500 bg-green-500/10 ring-2 ring-green-500/30 scale-[1.03]",
         state === "wrong" && selected &&
-          "border-destructive bg-destructive/10 ring-2 ring-destructive/30 scale-[0.97]",
+          "border-red-500 bg-red-500/10 ring-2 ring-red-500/30 scale-[0.97]",
         state === "wrong" && !selected &&
           "border-border bg-card opacity-30",
         state === "disabled" && "border-border bg-card opacity-30"
@@ -45,12 +45,12 @@ export function ChoiceButton({
       {/* Correct/wrong icon overlay */}
       {state === "correct" && (
         <div className="absolute top-1 right-1">
-          <Check className="w-4 h-4 text-primary" />
+          <Check className="w-4 h-4 text-green-600" />
         </div>
       )}
       {state === "wrong" && selected && (
         <div className="absolute top-1 right-1">
-          <X className="w-4 h-4 text-destructive" />
+          <X className="w-4 h-4 text-red-600" />
         </div>
       )}
 
@@ -60,15 +60,15 @@ export function ChoiceButton({
       {/* Pokemon name: Korean on first line, (English) on second */}
       <span aria-hidden="true" className={cn(
         "text-sm font-bold leading-tight",
-        state === "correct" && "text-primary",
-        state === "wrong" && selected && "text-destructive line-through",
+        state === "correct" && "text-green-700",
+        state === "wrong" && selected && "text-red-700 line-through",
       )}>
         {pokemon.nameKo}
       </span>
       <span aria-hidden="true" className={cn(
         "text-[10px] text-muted-foreground leading-tight",
-        state === "correct" && "text-primary/70",
-        state === "wrong" && selected && "text-destructive/70 line-through",
+        state === "correct" && "text-green-600/70",
+        state === "wrong" && selected && "text-red-600/70 line-through",
       )}>
         ({pokemon.nameEn})
       </span>

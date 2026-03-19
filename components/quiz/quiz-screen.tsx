@@ -58,8 +58,8 @@ export function QuizScreen({
 
   function getChoiceState(choice: Pokemon): ChoiceState {
     if (!isFeedback) return "idle";
-    if (choice.id === pokemon.id) return "correct";
-    if (choice.id === selectedId) return "wrong";
+    if (lastAnswerCorrect && choice.id === pokemon.id) return "correct";
+    if (!lastAnswerCorrect && choice.id === selectedId) return "wrong";
     return "disabled";
   }
 
@@ -111,21 +111,21 @@ export function QuizScreen({
       <PokeballDivider />
 
       {/* Menu panel — fixed layout */}
-      <MenuPanel className="flex-1 flex flex-col justify-end">
+      <MenuPanel className="flex-1 flex flex-col justify-center">
         {/* Fixed-height feedback/hint area */}
         <div className="h-[36px] mb-2 flex items-center">
           {isFeedback && lastAnswerCorrect && (
-            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-primary/10 border border-primary/20">
-              <Check className="w-4 h-4 shrink-0 text-primary" />
-              <p className="font-bold text-sm text-primary">정답!</p>
-              <p className="text-xs text-primary/70">+{scoreEarned} 획득!</p>
+            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-green-500/10 border border-green-500/20">
+              <Check className="w-4 h-4 shrink-0 text-green-600" />
+              <p className="font-bold text-sm text-green-700">정답!</p>
+              <p className="text-xs text-green-600/70">+{scoreEarned} 획득!</p>
             </div>
           )}
           {isFeedback && !lastAnswerCorrect && (
-            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-destructive/10 border border-destructive/20">
-              <X className="w-4 h-4 shrink-0 text-destructive" />
-              <p className="font-bold text-sm text-destructive">오답!</p>
-              <p className="text-xs text-destructive/70">정답은 {formatPokemonName(pokemon)}</p>
+            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-red-500/10 border border-red-500/20">
+              <X className="w-4 h-4 shrink-0 text-red-600" />
+              <p className="font-bold text-sm text-red-700">오답!</p>
+              <p className="text-xs text-red-600/70">정답은 {formatPokemonName(pokemon)}</p>
             </div>
           )}
           {!isFeedback && (

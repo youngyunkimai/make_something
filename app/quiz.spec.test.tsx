@@ -149,9 +149,9 @@ describe("QUIZ-005: 오답 선택", () => {
     const wrongButton = screen.getByRole("button", { name: /라이츄 \(Raichu\)/i });
     expect(wrongButton).toHaveAttribute("data-state", "wrong");
 
-    // 정답 강조
+    // 정답은 표시하지 않음 (disabled 상태)
     const correctButton = screen.getByRole("button", { name: /피카츄 \(Pikachu\)/i });
-    expect(correctButton).toHaveAttribute("data-state", "correct");
+    expect(correctButton).toHaveAttribute("data-state", "disabled");
 
     // 컬러 이미지 전환
     const img = screen.getByRole("img", { name: /피카츄/i });
