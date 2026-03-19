@@ -258,15 +258,8 @@ describe("QUIZ-010: 결과 요약", () => {
     // Q5: 푸린 오답 (라이츄 선택)
     await user.click(screen.getByRole("button", { name: /라이츄 \(Raichu\)/i }));
 
-    // 결과 화면
-    expect(await screen.findByText(/총점: 380점/)).toBeInTheDocument();
-    expect(screen.getByText(/정답률: 4 \/ 5/)).toBeInTheDocument();
-    expect(screen.getByText(/최대 콤보: 3/)).toBeInTheDocument();
-
-    // Q4까지 연속 정답이므로 최대 콤보 4... 아, 힌트 없이 Q1~Q4 정답 = 400점
-    // 하지만 spec에서 380점은 힌트 사용 케이스. 여기선 힌트 안 썼으므로 400점이 맞음
-    // 테스트 데이터에 맞게 검증
-    expect(screen.getByText(/총점: 400점/)).toBeInTheDocument();
+    // 결과 화면 — 힌트 미사용, Q1~Q4 정답(100점x4=400점), Q5 오답, 최대 콤보 4
+    expect(await screen.findByText(/총점: 400점/)).toBeInTheDocument();
     expect(screen.getByText(/정답률: 4 \/ 5/)).toBeInTheDocument();
     expect(screen.getByText(/최대 콤보: 4/)).toBeInTheDocument();
 
