@@ -25,9 +25,9 @@ export function StartScreen({ onStart, loading }: StartScreenProps) {
         </div>
         <div className="text-center">
           <p className="text-xs text-muted-foreground mb-1">
-            1세대 포켓몬 실루엣 퀴즈
+            1세대 실루엣 퀴즈
           </p>
-          <h1 className="text-xl font-bold">누구의 그 포켓몬?</h1>
+          <h1 className="text-xl font-bold">포켓몬 마스터 퀴즈</h1>
         </div>
       </BattleField>
 
