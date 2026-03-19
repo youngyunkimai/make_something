@@ -4,7 +4,7 @@ scenarios:
   - id: "QUIZ-001"
     name: "퀴즈 시작"
     given: "메인 화면이 표시된 상태"
-    when: "'시작' 버튼을 클릭한다"
+    when: "'시작하기' 버튼을 클릭한다"
     then: "실루엣 이미지 1개와 보기 버튼 4개가 표시되고, 문제 번호가 '1 / 5'로 표시된다"
     examples:
       - input: { action: "click_start" }
@@ -12,7 +12,7 @@ scenarios:
           silhouetteImage: true
           choiceCount: 4
           questionNumber: "1 / 5"
-          choiceFormat: "피카츄 (Pikachu)"
+          choiceFormat: "피카츄\n(Pikachu)"
 
   - id: "QUIZ-002"
     name: "보기에 정답 포함 검증"
@@ -29,12 +29,14 @@ scenarios:
     name: "정답 선택"
     given: "실루엣 문제가 표시된 상태"
     when: "정답 보기를 클릭한다"
-    then: "실루엣이 컬러 이미지로 전환되고, '정답!' 텍스트가 표시되며, 점수가 '100점'으로 표시된다"
+    then: "실루엣이 컬러 이미지로 전환되고, 정답 보기가 초록색으로 강조되며, 점수가 갱신된다"
     examples:
       - input: { selectedAnswer: "correct" }
         expect:
           colorImage: true
           resultText: "정답!"
+          resultColor: "green"
+          correctChoiceColor: "green"
           scoreText: "100점"
       - input: { selectedAnswer: "correct", currentCombo: 1 }
         expect:
@@ -45,10 +47,10 @@ scenarios:
   - id: "QUIZ-004"
     name: "정답 선택 후 다음 문제 이동"
     given: "1번 문제에서 정답을 선택하고 결과가 표시된 상태"
-    when: "다음 문제로 전환된다"
+    when: "다음 문제로 자동 전환된다"
     then: "문제 번호가 '2 / 5'로 갱신되고 새 실루엣과 보기 4개가 표시된다"
     examples:
-      - input: { currentQuestion: 1, action: "next_question" }
+      - input: { currentQuestion: 1, action: "auto_advance" }
         expect:
           questionNumber: "2 / 5"
           silhouetteImage: true
@@ -58,12 +60,13 @@ scenarios:
     name: "오답 선택"
     given: "실루엣 문제가 표시된 상태"
     when: "오답 보기를 클릭한다"
-    then: "선택한 보기에 오답 표시, 정답 보기가 강조되고, 실루엣이 컬러 이미지로 전환된다"
+    then: "선택한 보기에 빨간색 오답 표시, 정답 보기는 강조하지 않고, 실루엣이 컬러 이미지로 전환된다"
     examples:
       - input: { selectedAnswer: "wrong" }
         expect:
           wrongAnswerMarked: true
-          correctAnswerHighlighted: true
+          wrongAnswerColor: "red"
+          correctAnswerHidden: true
           colorImage: true
           scoreText: "0점"
 
@@ -81,55 +84,59 @@ scenarios:
     name: "힌트 1단계 — 타입 공개"
     given: "실루엣 문제가 표시된 상태에서 힌트를 사용하지 않은 상태"
     when: "'힌트' 버튼을 클릭한다"
-    then: "타입 정보가 표시되고, 획득 가능 점수가 70점으로 감소한다"
+    then: "타입 정보가 표시되고, 점수 감소가 표시된다"
     examples:
       - input: { hintClick: 1, pokemon: "피카츄" }
         expect:
           hintText: "전기 타입"
           availableScore: 70
+          scoreDisplay: "100 → 70점 -30"
 
   - id: "QUIZ-008"
     name: "힌트 2단계 — 도감번호 공개"
     given: "힌트 1단계가 공개된 상태"
     when: "'힌트' 버튼을 클릭한다"
-    then: "도감번호가 표시되고, 획득 가능 점수가 40점으로 감소한다"
+    then: "타입 + 도감번호가 표시되고, 점수 감소가 표시된다"
     examples:
       - input: { hintClick: 2, pokemon: "피카츄" }
         expect:
           hintText: "도감번호: #025"
           availableScore: 40
+          scoreDisplay: "100 → 40점 -60"
 
   - id: "QUIZ-009"
     name: "힌트 3단계 — 실루엣 일부 공개"
     given: "힌트 2단계가 공개된 상태"
     when: "'힌트' 버튼을 클릭한다"
-    then: "실루엣 밝기가 50%로 변경되고, 획득 가능 점수가 20점으로 감소하며, 힌트 버튼이 비활성화된다"
+    then: "실루엣 밝기가 50%로 변경되고, 점수 감소가 표시되며, 힌트 버튼이 비활성화된다"
     examples:
       - input: { hintClick: 3 }
         expect:
           silhouetteBrightness: "50%"
           availableScore: 20
+          scoreDisplay: "100 → 20점 -80"
           hintButtonDisabled: true
 
   - id: "QUIZ-010"
     name: "결과 요약"
     given: "5문제를 모두 풀은 상태"
     when: "마지막 문제의 결과가 표시된 후 결과 화면으로 이동한다"
-    then: "총점, 정답률, 최대 콤보, 틀린 포켓몬 목록이 표시되고, '다시 하기' 버튼이 표시된다"
+    then: "총점, 정답률, 최대 콤보가 한 줄에 표시되고, 틀린 포켓몬 목록, '다시 하기', '홈화면' 버튼이 표시된다"
     examples:
-      - input: { correctCount: 4, totalScore: 380, maxCombo: 3, wrongPokemon: ["파이리 (Charmander)"] }
+      - input: { correctCount: 4, totalScore: 400, maxCombo: 4, wrongPokemon: ["푸린 (Jigglypuff)"] }
         expect:
-          totalScore: "총점: 380점"
+          totalScore: "총점: 400점"
           accuracy: "정답률: 4 / 5"
-          maxCombo: "최대 콤보: 3"
-          wrongList: ["파이리 (Charmander)"]
+          maxCombo: "최대 콤보: 4"
+          wrongList: ["푸린 (Jigglypuff)"]
           retryButton: true
+          homeButton: true
 
   - id: "QUIZ-011"
-    name: "다시 하기 — 새 라운드 초기화"
+    name: "다시 하기 — 바로 새 퀴즈 시작"
     given: "결과 화면이 표시된 상태"
     when: "'다시 하기' 버튼을 클릭한다"
-    then: "문제 번호 '1 / 5', 점수 '0점'으로 초기화되고 새 실루엣과 보기 4개가 표시된다"
+    then: "홈 화면을 거치지 않고 바로 새 퀴즈가 시작되어 문제 번호 '1 / 5', 점수 '0점', 새 실루엣과 보기 4개가 표시된다"
     examples:
       - input: { action: "click_retry" }
         expect:
@@ -137,3 +144,16 @@ scenarios:
           scoreText: "0점"
           silhouetteImage: true
           choiceCount: 4
+          skipHomeScreen: true
+
+  - id: "QUIZ-012"
+    name: "홈화면 복귀"
+    given: "결과 화면이 표시된 상태"
+    when: "'홈화면' 버튼을 클릭한다"
+    then: "메인 화면(포켓볼 일러스트 + 시작하기 버튼)이 표시된다"
+    examples:
+      - input: { action: "click_home" }
+        expect:
+          pokeballImage: true
+          startButton: true
+          titleText: "포켓몬 마스터 퀴즈"
