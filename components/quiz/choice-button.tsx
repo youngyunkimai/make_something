@@ -1,9 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ChevronRight, Check, X } from "lucide-react";
+import { Check, X, Circle } from "lucide-react";
 import type { Pokemon } from "@/lib/pokemon";
-import { formatPokemonName } from "@/lib/pokemon";
 
 export type ChoiceState = "idle" | "correct" | "wrong" | "disabled";
 
@@ -29,23 +28,50 @@ export function ChoiceButton({
       data-state={state}
       onClick={onClick}
       disabled={isDisabled}
+      aria-label={`${pokemon.nameKo} (${pokemon.nameEn})`}
       className={cn(
-        "border-2 rounded-lg px-3 py-2.5 text-sm text-left flex items-center gap-2 transition-all",
+        "border-2 rounded-lg h-[60px] text-center flex flex-col items-center justify-center gap-0.5 transition-all relative overflow-hidden",
         state === "idle" &&
           "border-border bg-card hover:border-foreground hover:bg-accent cursor-pointer",
         state === "correct" &&
-          "border-foreground bg-muted font-bold",
-        state === "wrong" &&
-          "border-border line-through opacity-70",
-        state === "disabled" && "border-border bg-card opacity-40"
+          "border-primary bg-primary/10 ring-2 ring-primary/30 scale-[1.03]",
+        state === "wrong" && selected &&
+          "border-destructive bg-destructive/10 ring-2 ring-destructive/30 scale-[0.97]",
+        state === "wrong" && !selected &&
+          "border-border bg-card opacity-30",
+        state === "disabled" && "border-border bg-card opacity-30"
       )}
     >
-      {state === "correct" && <Check className="w-4 h-4 shrink-0" />}
-      {state === "wrong" && selected && <X className="w-4 h-4 shrink-0" />}
-      {state === "idle" && (
-        <ChevronRight className="w-4 h-4 shrink-0 opacity-0 group-hover:opacity-100" />
+      {/* Correct/wrong icon overlay */}
+      {state === "correct" && (
+        <div className="absolute top-1 right-1">
+          <Check className="w-4 h-4 text-primary" />
+        </div>
       )}
-      <span>{formatPokemonName(pokemon)}</span>
+      {state === "wrong" && selected && (
+        <div className="absolute top-1 right-1">
+          <X className="w-4 h-4 text-destructive" />
+        </div>
+      )}
+
+      {/* Accessible full name for test queries */}
+      <span className="sr-only">{pokemon.nameKo} ({pokemon.nameEn})</span>
+
+      {/* Pokemon name: Korean on first line, (English) on second */}
+      <span aria-hidden="true" className={cn(
+        "text-sm font-bold leading-tight",
+        state === "correct" && "text-primary",
+        state === "wrong" && selected && "text-destructive line-through",
+      )}>
+        {pokemon.nameKo}
+      </span>
+      <span aria-hidden="true" className={cn(
+        "text-[10px] text-muted-foreground leading-tight",
+        state === "correct" && "text-primary/70",
+        state === "wrong" && selected && "text-destructive/70 line-through",
+      )}>
+        ({pokemon.nameEn})
+      </span>
     </button>
   );
 }

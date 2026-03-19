@@ -110,22 +110,22 @@ export function QuizScreen({
 
       <PokeballDivider />
 
-      {/* Menu panel — fixed height message area + choices at bottom */}
-      <MenuPanel className="flex-1 flex flex-col">
-        {/* Fixed-height feedback/hint area — prevents choices from shifting */}
-        <div className="h-[40px] mb-2 flex items-center">
+      {/* Menu panel — fixed layout */}
+      <MenuPanel className="flex-1 flex flex-col justify-end">
+        {/* Fixed-height feedback/hint area */}
+        <div className="h-[36px] mb-2 flex items-center">
           {isFeedback && lastAnswerCorrect && (
-            <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 shrink-0" />
-              <p className="font-bold text-sm">정답!</p>
-              <p className="text-xs text-muted-foreground">+{scoreEarned} 획득!</p>
+            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-primary/10 border border-primary/20">
+              <Check className="w-4 h-4 shrink-0 text-primary" />
+              <p className="font-bold text-sm text-primary">정답!</p>
+              <p className="text-xs text-primary/70">+{scoreEarned} 획득!</p>
             </div>
           )}
           {isFeedback && !lastAnswerCorrect && (
-            <div className="flex items-center gap-2">
-              <X className="w-4 h-4 shrink-0" />
-              <p className="font-bold text-sm">오답!</p>
-              <p className="text-xs text-muted-foreground">정답은 {formatPokemonName(pokemon)}</p>
+            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-destructive/10 border border-destructive/20">
+              <X className="w-4 h-4 shrink-0 text-destructive" />
+              <p className="font-bold text-sm text-destructive">오답!</p>
+              <p className="text-xs text-destructive/70">정답은 {formatPokemonName(pokemon)}</p>
             </div>
           )}
           {!isFeedback && (
@@ -142,8 +142,8 @@ export function QuizScreen({
           )}
         </div>
 
-        {/* Choice grid — always at the same position */}
-        <div className="grid grid-cols-2 gap-2 mt-auto">
+        {/* Choice grid — fixed position, fixed size */}
+        <div className="grid grid-cols-2 gap-2">
           {choices.map((choice) => (
             <ChoiceButton
               key={choice.id}
@@ -154,13 +154,6 @@ export function QuizScreen({
             />
           ))}
         </div>
-
-        {/* Auto-advance message */}
-        {isFeedback && (
-          <p className="text-xs text-center text-muted-foreground mt-2">
-            다음 문제로 자동 전환...
-          </p>
-        )}
       </MenuPanel>
     </GameFrame>
   );
