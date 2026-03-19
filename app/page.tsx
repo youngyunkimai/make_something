@@ -62,6 +62,11 @@ export default function Page() {
     dispatch({ type: "USE_HINT" });
   }, []);
 
+  const handleHome = useCallback(() => {
+    if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+    dispatch({ type: "RESTART" });
+  }, []);
+
   const handleRetry = useCallback(async () => {
     if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
     dispatch({ type: "RESTART" });
@@ -99,6 +104,7 @@ export default function Page() {
           maxCombo={state.maxCombo}
           wrongAnswers={wrongAnswers}
           onRetry={handleRetry}
+          onHome={handleHome}
         />
       </main>
     );

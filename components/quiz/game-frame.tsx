@@ -12,7 +12,7 @@ export function GameFrame({
   return (
     <div
       className={cn(
-        "border-3 border-foreground rounded-xl overflow-hidden bg-card max-w-[560px] mx-auto",
+        "border-3 border-foreground rounded-2xl overflow-hidden bg-card w-[375px] h-[667px] mx-auto flex flex-col shadow-lg",
         className
       )}
     >
@@ -31,7 +31,7 @@ export function BattleField({
   return (
     <div
       className={cn(
-        "bg-muted min-h-[240px] relative flex flex-col items-center justify-center gap-3 p-4",
+        "bg-muted flex-1 relative flex flex-col items-center justify-center gap-3 p-4 overflow-y-auto",
         className
       )}
     >
@@ -49,7 +49,7 @@ export function MenuPanel({
 }) {
   return (
     <div
-      className={cn("border-t-3 border-foreground bg-card p-4", className)}
+      className={cn("border-t-3 border-foreground bg-card p-4 shrink-0", className)}
     >
       {children}
     </div>
@@ -77,7 +77,7 @@ export function TextBox({
 
 export function PokeballDivider() {
   return (
-    <div className="flex items-center gap-2 px-4 py-2">
+    <div className="flex items-center gap-2 px-4 py-2 shrink-0">
       <div className="flex-1 h-0.5 bg-foreground" />
       <div className="w-5 h-5 border-2 border-foreground rounded-full bg-card relative flex items-center justify-center">
         <div className="w-2 h-2 border-2 border-foreground rounded-full bg-muted" />

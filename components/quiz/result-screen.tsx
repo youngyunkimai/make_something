@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCcw, ChevronRight, Flame } from "lucide-react";
+import { RotateCcw, ChevronRight, Home } from "lucide-react";
 import {
   GameFrame,
   BattleField,
@@ -20,6 +20,7 @@ interface ResultScreenProps {
   maxCombo: number;
   wrongAnswers: AnswerRecord[];
   onRetry: () => void;
+  onHome: () => void;
 }
 
 export function ResultScreen({
@@ -29,6 +30,7 @@ export function ResultScreen({
   maxCombo,
   wrongAnswers,
   onRetry,
+  onHome,
 }: ResultScreenProps) {
   return (
     <GameFrame>
@@ -96,14 +98,24 @@ export function ResultScreen({
           </TextBox>
         )}
 
-        <button
-          type="button"
-          onClick={onRetry}
-          className="w-full border-2 border-foreground rounded-lg px-4 py-2.5 text-sm font-bold bg-card hover:bg-accent transition-colors flex items-center justify-center gap-2 cursor-pointer"
-        >
-          <RotateCcw className="w-4 h-4" />
-          다시 하기
-        </button>
+        <div className="flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={onRetry}
+            className="w-full border-2 border-foreground rounded-lg px-4 py-2.5 text-sm font-bold bg-card hover:bg-accent transition-colors flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <RotateCcw className="w-4 h-4" />
+            다시 하기
+          </button>
+          <button
+            type="button"
+            onClick={onHome}
+            className="w-full border rounded-lg px-4 py-2 text-sm text-muted-foreground bg-card hover:bg-accent transition-colors flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <Home className="w-4 h-4" />
+            홈화면
+          </button>
+        </div>
       </MenuPanel>
     </GameFrame>
   );
