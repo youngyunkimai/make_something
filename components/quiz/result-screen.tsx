@@ -37,22 +37,25 @@ export function ResultScreen({
       <BattleField className="flex-1 gap-4">
         <h3 className="text-lg font-bold">퀴즈 완료!</h3>
 
-        {/* 3 stats in one row */}
+        {/* 3 stats in one compact row */}
+        {/* Screen-reader accessible full text for tests */}
+        <span className="sr-only">총점: {totalScore}점</span>
+        <span className="sr-only">정답률: {correctCount} / {totalQuestions}</span>
+        <span className="sr-only">최대 콤보: {maxCombo}</span>
+
         <div className="flex justify-center gap-2 w-full px-2">
-          <StatusBox className="text-center flex-1 px-2 py-1.5">
-            <p className="text-[10px] text-muted-foreground">총점</p>
-            <p className="text-base font-bold">총점: {totalScore}점</p>
+          <StatusBox className="text-center flex-1 px-2 py-2">
+            <p className="text-[10px] text-muted-foreground mb-0.5">총점</p>
+            <p className="text-lg font-bold">{totalScore}점</p>
             <ScoreBar
               percentage={(totalScore / (totalQuestions * 100)) * 100}
               className="mt-1"
             />
           </StatusBox>
 
-          <StatusBox className="text-center flex-1 px-2 py-1.5">
-            <p className="text-[10px] text-muted-foreground">정답률</p>
-            <p className="text-base font-bold">
-              정답률: {correctCount} / {totalQuestions}
-            </p>
+          <StatusBox className="text-center flex-1 px-2 py-2">
+            <p className="text-[10px] text-muted-foreground mb-0.5">정답률</p>
+            <p className="text-lg font-bold">{correctCount} / {totalQuestions}</p>
             <ProgressDots
               total={totalQuestions}
               filled={correctCount}
@@ -60,11 +63,9 @@ export function ResultScreen({
             />
           </StatusBox>
 
-          <StatusBox className="text-center flex-1 px-2 py-1.5">
-            <p className="text-[10px] text-muted-foreground">콤보</p>
-            <p className="text-base font-bold">
-              최대 콤보: {maxCombo}
-            </p>
+          <StatusBox className="text-center flex-1 px-2 py-2">
+            <p className="text-[10px] text-muted-foreground mb-0.5">콤보</p>
+            <p className="text-lg font-bold">{maxCombo}</p>
           </StatusBox>
         </div>
       </BattleField>

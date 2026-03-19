@@ -86,12 +86,13 @@ export function QuizScreen({
         </StatusBox>
       </div>
 
-      <BattleField className="h-[280px] flex-none">
-        {/* Pokemon silhouette/image */}
+      {/* Battle field — pokemon image area, larger */}
+      <BattleField className="h-[320px] flex-none">
         <SilhouetteImage
           src={pokemon.imageUrl}
           pokemonName={formatPokemonName(pokemon)}
           state={silhouetteState}
+          className="w-[220px] h-[220px]"
         />
 
         {/* Pokemon name (shown on feedback) */}
@@ -101,7 +102,7 @@ export function QuizScreen({
           </span>
         )}
 
-        {/* Hint text display (battle field area) */}
+        {/* Hint text display */}
         {!isFeedback && (
           <HintPanel pokemon={pokemon} hintLevel={hintLevel} />
         )}
@@ -109,50 +110,40 @@ export function QuizScreen({
 
       <PokeballDivider />
 
-      <MenuPanel className="flex-1 overflow-y-auto">
-        {/* Feedback message */}
-        {isFeedback && (
-          <TextBox className="mb-3">
-            {lastAnswerCorrect ? (
-              <div className="flex items-center gap-2">
-                <Check className="w-4 h-4" />
-                <div>
-                  <p className="font-bold">정답!</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    +{scoreEarned} 획득!
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <X className="w-4 h-4" />
-                <div>
-                  <p className="font-bold">오답!</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    정답은 {formatPokemonName(pokemon)}
-                  </p>
-                </div>
-              </div>
-            )}
-          </TextBox>
-        )}
+      {/* Menu panel — fixed height message area + choices at bottom */}
+      <MenuPanel className="flex-1 flex flex-col">
+        {/* Fixed-height feedback/hint area — prevents choices from shifting */}
+        <div className="h-[40px] mb-2 flex items-center">
+          {isFeedback && lastAnswerCorrect && (
+            <div className="flex items-center gap-2">
+              <Check className="w-4 h-4 shrink-0" />
+              <p className="font-bold text-sm">정답!</p>
+              <p className="text-xs text-muted-foreground">+{scoreEarned} 획득!</p>
+            </div>
+          )}
+          {isFeedback && !lastAnswerCorrect && (
+            <div className="flex items-center gap-2">
+              <X className="w-4 h-4 shrink-0" />
+              <p className="font-bold text-sm">오답!</p>
+              <p className="text-xs text-muted-foreground">정답은 {formatPokemonName(pokemon)}</p>
+            </div>
+          )}
+          {!isFeedback && (
+            <div className="w-full flex items-center justify-end">
+              <button
+                type="button"
+                onClick={onUseHint}
+                disabled={hintLevel >= 3}
+                className="border rounded px-3 py-1 text-xs flex items-center gap-1 bg-card hover:bg-accent transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                힌트 {3 - hintLevel}/3
+              </button>
+            </div>
+          )}
+        </div>
 
-        {/* Hint button + available score (only when playing) */}
-        {!isFeedback && (
-          <div className="flex items-center justify-end mb-3">
-            <button
-              type="button"
-              onClick={onUseHint}
-              disabled={hintLevel >= 3}
-              className="border rounded px-3 py-1 text-xs flex items-center gap-1 bg-card hover:bg-accent transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              힌트 {3 - hintLevel}/3
-            </button>
-          </div>
-        )}
-
-        {/* Choice grid */}
-        <div className="grid grid-cols-2 gap-2">
+        {/* Choice grid — always at the same position */}
+        <div className="grid grid-cols-2 gap-2 mt-auto">
           {choices.map((choice) => (
             <ChoiceButton
               key={choice.id}
@@ -166,7 +157,7 @@ export function QuizScreen({
 
         {/* Auto-advance message */}
         {isFeedback && (
-          <p className="text-xs text-center text-muted-foreground mt-3">
+          <p className="text-xs text-center text-muted-foreground mt-2">
             다음 문제로 자동 전환...
           </p>
         )}
