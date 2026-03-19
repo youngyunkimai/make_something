@@ -8,47 +8,19 @@ import {
   TextBox,
   PokeballDivider,
 } from "./game-frame";
+import { PokeballSvg } from "./pokeball-svg";
 
 interface StartScreenProps {
   onStart: () => void;
   loading?: boolean;
 }
 
-const ARTWORK_BASE =
-  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork";
-
-// Iconic Gen 1 pokemon for the title screen
-const HERO_POKEMON = [
-  { id: 6, name: "리자몽" },   // Charizard
-  { id: 25, name: "피카츄" },  // Pikachu (center, largest)
-  { id: 150, name: "뮤츠" },   // Mewtwo
-];
-
 export function StartScreen({ onStart, loading }: StartScreenProps) {
   return (
     <GameFrame>
-      <BattleField className="flex-1 gap-3">
-        {/* Hero pokemon silhouettes */}
-        <div className="flex items-end justify-center gap-1">
-          <img
-            src={`${ARTWORK_BASE}/${HERO_POKEMON[0].id}.png`}
-            alt={HERO_POKEMON[0].name}
-            className="w-[72px] h-[72px] object-contain"
-            style={{ filter: "brightness(0)" }}
-          />
-          <img
-            src={`${ARTWORK_BASE}/${HERO_POKEMON[1].id}.png`}
-            alt={HERO_POKEMON[1].name}
-            className="w-[100px] h-[100px] object-contain -mb-1"
-            style={{ filter: "brightness(0)" }}
-          />
-          <img
-            src={`${ARTWORK_BASE}/${HERO_POKEMON[2].id}.png`}
-            alt={HERO_POKEMON[2].name}
-            className="w-[72px] h-[72px] object-contain"
-            style={{ filter: "brightness(0)" }}
-          />
-        </div>
+      <BattleField className="flex-1 gap-4">
+        {/* Pokeball hero image */}
+        <PokeballSvg size={140} />
 
         {/* Title */}
         <div className="text-center">
