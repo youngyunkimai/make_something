@@ -20,18 +20,18 @@ export function HintPanel({ pokemon, hintLevel }: HintPanelProps) {
   const typeText = pokemon.types.map((t) => getTypeNameKo(t)).join(" / ") + " 타입";
 
   return (
-    <div className="flex flex-col items-center gap-1 w-full max-w-[300px]">
-      {/* Type hint — always shown */}
-      <span className="text-sm font-bold">{typeText}</span>
+    <div className="flex flex-col items-center gap-0.5 w-full max-w-[300px]">
+      {/* Line 1: hint info */}
+      <span className="text-sm font-bold">
+        {typeText}
+        {hintLevel >= 2 && (
+          <span className="text-muted-foreground font-normal ml-2">
+            도감번호: {formatDexNumber(pokemon.id)}
+          </span>
+        )}
+      </span>
 
-      {/* Dex number — level 2+ */}
-      {hintLevel >= 2 && (
-        <span className="text-sm text-muted-foreground">
-          도감번호: {formatDexNumber(pokemon.id)}
-        </span>
-      )}
-
-      {/* Score: show penalty */}
+      {/* Line 2: score penalty */}
       <span className="text-xs text-muted-foreground">
         <span className="line-through">{BASE_SCORE}</span>
         {" → "}

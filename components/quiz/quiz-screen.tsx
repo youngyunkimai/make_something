@@ -75,7 +75,7 @@ export function QuizScreen({
         </StatusBox>
 
         <StatusBox className="text-right py-1 px-2">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-end gap-2">
             <ComboDisplay combo={combo} />
             <span className="text-sm font-bold">{score}점</span>
           </div>
