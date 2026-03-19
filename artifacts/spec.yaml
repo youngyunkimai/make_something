@@ -1,0 +1,139 @@
+version: 1
+
+scenarios:
+  - id: "QUIZ-001"
+    name: "퀴즈 시작"
+    given: "메인 화면이 표시된 상태"
+    when: "'시작' 버튼을 클릭한다"
+    then: "실루엣 이미지 1개와 보기 버튼 4개가 표시되고, 문제 번호가 '1 / 5'로 표시된다"
+    examples:
+      - input: { action: "click_start" }
+        expect:
+          silhouetteImage: true
+          choiceCount: 4
+          questionNumber: "1 / 5"
+          choiceFormat: "피카츄 (Pikachu)"
+
+  - id: "QUIZ-002"
+    name: "보기에 정답 포함 검증"
+    given: "퀴즈 화면에 실루엣 문제가 표시된 상태"
+    when: "문제가 로드된다"
+    then: "현재 실루엣의 포켓몬 이름이 4개 보기 중 하나에 표시된다"
+    examples:
+      - input: { currentPokemon: "피카츄 (Pikachu)" }
+        expect:
+          correctChoiceVisible: true
+          choiceCount: 4
+
+  - id: "QUIZ-003"
+    name: "정답 선택"
+    given: "실루엣 문제가 표시된 상태"
+    when: "정답 보기를 클릭한다"
+    then: "실루엣이 컬러 이미지로 전환되고, '정답!' 텍스트가 표시되며, 점수가 '100점'으로 표시된다"
+    examples:
+      - input: { selectedAnswer: "correct" }
+        expect:
+          colorImage: true
+          resultText: "정답!"
+          scoreText: "100점"
+      - input: { selectedAnswer: "correct", currentCombo: 1 }
+        expect:
+          colorImage: true
+          resultText: "정답!"
+          comboText: "2 콤보!"
+
+  - id: "QUIZ-004"
+    name: "정답 선택 후 다음 문제 이동"
+    given: "1번 문제에서 정답을 선택하고 결과가 표시된 상태"
+    when: "다음 문제로 전환된다"
+    then: "문제 번호가 '2 / 5'로 갱신되고 새 실루엣과 보기 4개가 표시된다"
+    examples:
+      - input: { currentQuestion: 1, action: "next_question" }
+        expect:
+          questionNumber: "2 / 5"
+          silhouetteImage: true
+          choiceCount: 4
+
+  - id: "QUIZ-005"
+    name: "오답 선택"
+    given: "실루엣 문제가 표시된 상태"
+    when: "오답 보기를 클릭한다"
+    then: "선택한 보기에 오답 표시, 정답 보기가 강조되고, 실루엣이 컬러 이미지로 전환된다"
+    examples:
+      - input: { selectedAnswer: "wrong" }
+        expect:
+          wrongAnswerMarked: true
+          correctAnswerHighlighted: true
+          colorImage: true
+          scoreText: "0점"
+
+  - id: "QUIZ-006"
+    name: "오답 선택 시 콤보 초기화"
+    given: "'2 콤보!' 텍스트가 표시된 상태에서 실루엣 문제가 표시된 상태"
+    when: "오답 보기를 클릭한다"
+    then: "콤보 텍스트가 화면에서 사라진다"
+    examples:
+      - input: { selectedAnswer: "wrong", currentCombo: 2 }
+        expect:
+          comboText: ""
+
+  - id: "QUIZ-007"
+    name: "힌트 1단계 — 타입 공개"
+    given: "실루엣 문제가 표시된 상태에서 힌트를 사용하지 않은 상태"
+    when: "'힌트' 버튼을 클릭한다"
+    then: "타입 정보가 표시되고, 획득 가능 점수가 70점으로 감소한다"
+    examples:
+      - input: { hintClick: 1, pokemon: "피카츄" }
+        expect:
+          hintText: "전기 타입"
+          availableScore: 70
+
+  - id: "QUIZ-008"
+    name: "힌트 2단계 — 도감번호 공개"
+    given: "힌트 1단계가 공개된 상태"
+    when: "'힌트' 버튼을 클릭한다"
+    then: "도감번호가 표시되고, 획득 가능 점수가 40점으로 감소한다"
+    examples:
+      - input: { hintClick: 2, pokemon: "피카츄" }
+        expect:
+          hintText: "도감번호: #025"
+          availableScore: 40
+
+  - id: "QUIZ-009"
+    name: "힌트 3단계 — 실루엣 일부 공개"
+    given: "힌트 2단계가 공개된 상태"
+    when: "'힌트' 버튼을 클릭한다"
+    then: "실루엣 밝기가 50%로 변경되고, 획득 가능 점수가 20점으로 감소하며, 힌트 버튼이 비활성화된다"
+    examples:
+      - input: { hintClick: 3 }
+        expect:
+          silhouetteBrightness: "50%"
+          availableScore: 20
+          hintButtonDisabled: true
+
+  - id: "QUIZ-010"
+    name: "결과 요약"
+    given: "5문제를 모두 풀은 상태"
+    when: "마지막 문제의 결과가 표시된 후 결과 화면으로 이동한다"
+    then: "총점, 정답률, 최대 콤보, 틀린 포켓몬 목록이 표시되고, '다시 하기' 버튼이 표시된다"
+    examples:
+      - input: { correctCount: 4, totalScore: 380, maxCombo: 3, wrongPokemon: ["파이리 (Charmander)"] }
+        expect:
+          totalScore: "총점: 380점"
+          accuracy: "정답률: 4 / 5"
+          maxCombo: "최대 콤보: 3"
+          wrongList: ["파이리 (Charmander)"]
+          retryButton: true
+
+  - id: "QUIZ-011"
+    name: "다시 하기 — 새 라운드 초기화"
+    given: "결과 화면이 표시된 상태"
+    when: "'다시 하기' 버튼을 클릭한다"
+    then: "문제 번호 '1 / 5', 점수 '0점'으로 초기화되고 새 실루엣과 보기 4개가 표시된다"
+    examples:
+      - input: { action: "click_retry" }
+        expect:
+          questionNumber: "1 / 5"
+          scoreText: "0점"
+          silhouetteImage: true
+          choiceCount: 4
