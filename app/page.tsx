@@ -81,7 +81,7 @@ export default function Page() {
 
   if (state.gamePhase === "idle" || state.gamePhase === "loading") {
     return (
-      <main className="min-h-screen flex items-center justify-center p-4">
+      <main>
         <StartScreen
           onStart={handleStart}
           loading={state.gamePhase === "loading"}
@@ -95,7 +95,7 @@ export default function Page() {
     const correctCount = state.answers.filter((a) => a.correct).length;
 
     return (
-      <main className="min-h-screen flex items-center justify-center p-4">
+      <main>
         <ResultScreen
           totalScore={state.score}
           correctCount={correctCount}

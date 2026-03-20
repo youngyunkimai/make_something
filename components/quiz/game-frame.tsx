@@ -12,7 +12,7 @@ export function GameFrame({
   return (
     <div
       className={cn(
-        "border-3 border-foreground rounded-2xl overflow-hidden bg-card w-[375px] h-[667px] mx-auto flex flex-col shadow-lg",
+        "overflow-hidden bg-card w-full h-dvh flex flex-col",
         className
       )}
     >
