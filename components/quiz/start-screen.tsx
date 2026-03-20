@@ -7,17 +7,20 @@ import {
   MenuPanel,
   TextBox,
   PokeballDivider,
+  type ViewMode,
 } from "./game-frame";
 import { PokeballSvg } from "./pokeball-svg";
 
 interface StartScreenProps {
   onStart: () => void;
   loading?: boolean;
+  viewMode: ViewMode;
+  onToggleView: () => void;
 }
 
-export function StartScreen({ onStart, loading }: StartScreenProps) {
+export function StartScreen({ onStart, loading, viewMode, onToggleView }: StartScreenProps) {
   return (
-    <GameFrame>
+    <GameFrame viewMode={viewMode} onToggleView={onToggleView}>
       <BattleField className="flex-1 gap-4">
         {/* Pokeball hero image */}
         <PokeballSvg size={140} />

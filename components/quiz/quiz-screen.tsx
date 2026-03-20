@@ -7,6 +7,7 @@ import {
   MenuPanel,
   TextBox,
   PokeballDivider,
+  type ViewMode,
 } from "./game-frame";
 import { StatusBox, ScoreBar, ProgressDots, ComboDisplay } from "./status-box";
 import { SilhouetteImage } from "./silhouette-image";
@@ -30,6 +31,8 @@ interface QuizScreenProps {
   selectedId: number | null;
   onSelectAnswer: (pokemonId: number) => void;
   onUseHint: () => void;
+  viewMode: ViewMode;
+  onToggleView: () => void;
 }
 
 export function QuizScreen({
@@ -45,6 +48,8 @@ export function QuizScreen({
   selectedId,
   onSelectAnswer,
   onUseHint,
+  viewMode,
+  onToggleView,
 }: QuizScreenProps) {
   const isFeedback = gamePhase === "feedback";
   const silhouetteState = isFeedback
@@ -64,7 +69,7 @@ export function QuizScreen({
   }
 
   return (
-    <GameFrame>
+    <GameFrame viewMode={viewMode} onToggleView={onToggleView}>
       {/* Top status bar — fixed at top */}
       <div className="w-full flex items-center justify-between px-4 py-2 bg-muted shrink-0 border-b border-border">
         <StatusBox className="flex items-center gap-2 py-1 px-2">

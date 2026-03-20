@@ -1,22 +1,65 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { Monitor, Smartphone } from "lucide-react";
+
+export type ViewMode = "mobile" | "desktop";
+
+interface GameFrameProps {
+  children: React.ReactNode;
+  className?: string;
+  viewMode: ViewMode;
+  onToggleView: () => void;
+}
 
 export function GameFrame({
   children,
   className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+  viewMode,
+  onToggleView,
+}: GameFrameProps) {
+  const isMobile = viewMode === "mobile";
+
   return (
     <div
       className={cn(
-        "overflow-hidden bg-card w-full h-dvh flex flex-col",
-        className
+        "relative",
+        isMobile
+          ? "w-full h-dvh"
+          : "min-h-screen flex items-center justify-center p-6 bg-muted"
       )}
     >
-      {children}
+      {/* View toggle button */}
+      <button
+        type="button"
+        onClick={onToggleView}
+        className={cn(
+          "absolute z-50 p-2 rounded-lg border bg-card/90 backdrop-blur-sm hover:bg-accent transition-colors cursor-pointer",
+          isMobile
+            ? "top-1 right-1"
+            : "top-4 right-4"
+        )}
+        aria-label={isMobile ? "PC 화면으로 전환" : "모바일 화면으로 전환"}
+      >
+        {isMobile ? (
+          <Monitor className="w-4 h-4" />
+        ) : (
+          <Smartphone className="w-4 h-4" />
+        )}
+      </button>
+
+      {/* Game container */}
+      <div
+        className={cn(
+          "overflow-hidden bg-card flex flex-col",
+          isMobile
+            ? "w-full h-full"
+            : "w-[375px] h-[667px] border-3 border-foreground rounded-2xl shadow-lg",
+          className
+        )}
+      >
+        {children}
+      </div>
     </div>
   );
 }

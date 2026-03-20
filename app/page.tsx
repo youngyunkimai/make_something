@@ -4,6 +4,7 @@ import { useReducer, useCallback, useRef, useState } from "react";
 import { quizReducer, initialState, getAvailableScore } from "@/lib/quiz-reducer";
 import { getRandomPokemon, getPokemonChoices } from "@/lib/pokeapi";
 import type { Pokemon } from "@/lib/pokemon";
+import type { ViewMode } from "@/components/quiz/game-frame";
 import { StartScreen } from "@/components/quiz/start-screen";
 import { QuizScreen } from "@/components/quiz/quiz-screen";
 import { ResultScreen } from "@/components/quiz/result-screen";
@@ -14,7 +15,12 @@ export default function Page() {
   const [state, dispatch] = useReducer(quizReducer, initialState);
   const [choices, setChoices] = useState<Pokemon[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>("mobile");
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const toggleView = useCallback(() => {
+    setViewMode((prev) => (prev === "mobile" ? "desktop" : "mobile"));
+  }, []);
 
   const generateChoices = useCallback(
     (pokemon: Pokemon, pool: Pokemon[]) => {
@@ -38,7 +44,6 @@ export default function Page() {
       setSelectedId(pokemonId);
       dispatch({ type: "SELECT_ANSWER", selectedId: pokemonId });
 
-      // Auto-advance after feedback delay
       if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
       feedbackTimer.current = setTimeout(() => {
         const nextQuestion = state.currentQuestion + 1;
@@ -69,7 +74,6 @@ export default function Page() {
 
   const handleRetry = useCallback(async () => {
     if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
-    // Skip idle state — go directly to loading then playing
     dispatch({ type: "START_LOADING" });
     const pokemon = await getRandomPokemon(5);
     dispatch({ type: "START_GAME", quizPokemon: pokemon, choicePool: pokemon });
@@ -78,15 +82,15 @@ export default function Page() {
   }, [generateChoices]);
 
   const currentPokemon = state.quizPokemon[state.currentQuestion];
+  const viewProps = { viewMode, onToggleView: toggleView };
 
   if (state.gamePhase === "idle" || state.gamePhase === "loading") {
     return (
-      <main>
-        <StartScreen
-          onStart={handleStart}
-          loading={state.gamePhase === "loading"}
-        />
-      </main>
+      <StartScreen
+        onStart={handleStart}
+        loading={state.gamePhase === "loading"}
+        {...viewProps}
+      />
     );
   }
 
@@ -95,37 +99,34 @@ export default function Page() {
     const correctCount = state.answers.filter((a) => a.correct).length;
 
     return (
-      <main>
-        <ResultScreen
-          totalScore={state.score}
-          correctCount={correctCount}
-          totalQuestions={state.quizPokemon.length}
-          maxCombo={state.maxCombo}
-          wrongAnswers={wrongAnswers}
-          onRetry={handleRetry}
-          onHome={handleHome}
-        />
-      </main>
+      <ResultScreen
+        totalScore={state.score}
+        correctCount={correctCount}
+        totalQuestions={state.quizPokemon.length}
+        maxCombo={state.maxCombo}
+        wrongAnswers={wrongAnswers}
+        onRetry={handleRetry}
+        onHome={handleHome}
+        {...viewProps}
+      />
     );
   }
 
-  // playing or feedback
   return (
-    <main className="min-h-screen flex items-center justify-center p-4">
-      <QuizScreen
-        pokemon={currentPokemon}
-        choices={choices}
-        questionNumber={state.currentQuestion + 1}
-        totalQuestions={state.quizPokemon.length}
-        score={state.score}
-        combo={state.combo}
-        hintLevel={state.hintLevel}
-        gamePhase={state.gamePhase}
-        lastAnswerCorrect={state.lastAnswerCorrect}
-        selectedId={selectedId}
-        onSelectAnswer={handleSelectAnswer}
-        onUseHint={handleUseHint}
-      />
-    </main>
+    <QuizScreen
+      pokemon={currentPokemon}
+      choices={choices}
+      questionNumber={state.currentQuestion + 1}
+      totalQuestions={state.quizPokemon.length}
+      score={state.score}
+      combo={state.combo}
+      hintLevel={state.hintLevel}
+      gamePhase={state.gamePhase}
+      lastAnswerCorrect={state.lastAnswerCorrect}
+      selectedId={selectedId}
+      onSelectAnswer={handleSelectAnswer}
+      onUseHint={handleUseHint}
+      {...viewProps}
+    />
   );
 }

@@ -7,6 +7,7 @@ import {
   MenuPanel,
   TextBox,
   PokeballDivider,
+  type ViewMode,
 } from "./game-frame";
 import { StatusBox, ScoreBar, ProgressDots } from "./status-box";
 import { SilhouetteImage } from "./silhouette-image";
@@ -21,6 +22,8 @@ interface ResultScreenProps {
   wrongAnswers: AnswerRecord[];
   onRetry: () => void;
   onHome: () => void;
+  viewMode: ViewMode;
+  onToggleView: () => void;
 }
 
 export function ResultScreen({
@@ -31,9 +34,11 @@ export function ResultScreen({
   wrongAnswers,
   onRetry,
   onHome,
+  viewMode,
+  onToggleView,
 }: ResultScreenProps) {
   return (
-    <GameFrame>
+    <GameFrame viewMode={viewMode} onToggleView={onToggleView}>
       <BattleField className="flex-1 gap-4">
         <h3 className="text-lg font-bold">퀴즈 완료!</h3>
 
