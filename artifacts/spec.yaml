@@ -157,3 +157,15 @@ scenarios:
           pokeballImage: true
           startButton: true
           titleText: "포켓몬 마스터 퀴즈"
+
+  - id: "QUIZ-013"
+    name: "세대 선택"
+    given: "메인 화면이 표시된 상태 (기본 1세대)"
+    when: "'2세대' 버튼을 클릭한다"
+    then: "부제가 '2세대 포켓몬 100종'으로 변경되고, '2세대' 버튼이 선택 상태로 표시된다"
+    examples:
+      - input: { action: "click_generation", generation: 2 }
+        expect:
+          subtitleText: "2세대 포켓몬 100종"
+          generationButtonPressed: "2세대"
+          defaultSubtitle: "1세대 포켓몬 151종"

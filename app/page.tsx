@@ -2,7 +2,7 @@
 
 import { useReducer, useCallback, useRef, useState } from "react";
 import { quizReducer, initialState, getAvailableScore } from "@/lib/quiz-reducer";
-import { getRandomPokemon, getPokemonChoices } from "@/lib/pokeapi";
+import { getRandomPokemon, getPokemonChoices, type GenerationKey } from "@/lib/pokeapi";
 import type { Pokemon } from "@/lib/pokemon";
 import type { ViewMode } from "@/components/quiz/game-frame";
 import { StartScreen } from "@/components/quiz/start-screen";
@@ -16,6 +16,7 @@ export default function Page() {
   const [choices, setChoices] = useState<Pokemon[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("mobile");
+  const [generation, setGeneration] = useState<GenerationKey>(1);
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const toggleView = useCallback(() => {
@@ -31,11 +32,11 @@ export default function Page() {
 
   const handleStart = useCallback(async () => {
     dispatch({ type: "START_LOADING" });
-    const pokemon = await getRandomPokemon(5);
+    const pokemon = await getRandomPokemon(5, generation);
     dispatch({ type: "START_GAME", quizPokemon: pokemon, choicePool: pokemon });
     setChoices(generateChoices(pokemon[0], pokemon));
     setSelectedId(null);
-  }, [generateChoices]);
+  }, [generateChoices, generation]);
 
   const handleSelectAnswer = useCallback(
     (pokemonId: number) => {
@@ -75,11 +76,11 @@ export default function Page() {
   const handleRetry = useCallback(async () => {
     if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
     dispatch({ type: "START_LOADING" });
-    const pokemon = await getRandomPokemon(5);
+    const pokemon = await getRandomPokemon(5, generation);
     dispatch({ type: "START_GAME", quizPokemon: pokemon, choicePool: pokemon });
     setChoices(generateChoices(pokemon[0], pokemon));
     setSelectedId(null);
-  }, [generateChoices]);
+  }, [generateChoices, generation]);
 
   const currentPokemon = state.quizPokemon[state.currentQuestion];
   const viewProps = { viewMode, onToggleView: toggleView };
@@ -89,6 +90,8 @@ export default function Page() {
       <StartScreen
         onStart={handleStart}
         loading={state.gamePhase === "loading"}
+        generation={generation}
+        onSelectGeneration={setGeneration}
         {...viewProps}
       />
     );

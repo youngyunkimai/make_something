@@ -4,28 +4,32 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import Page from "./page";
 
-// Mock PokeAPI — always return deterministic data
-vi.mock("@/lib/pokeapi", () => ({
-  getRandomPokemon: vi.fn().mockResolvedValue([
-    { id: 25, nameKo: "피카츄", nameEn: "Pikachu", types: ["electric"], imageUrl: "https://example.com/25.png" },
-    { id: 4, nameKo: "파이리", nameEn: "Charmander", types: ["fire"], imageUrl: "https://example.com/4.png" },
-    { id: 7, nameKo: "꼬부기", nameEn: "Squirtle", types: ["water"], imageUrl: "https://example.com/7.png" },
-    { id: 1, nameKo: "이상해씨", nameEn: "Bulbasaur", types: ["grass", "poison"], imageUrl: "https://example.com/1.png" },
-    { id: 39, nameKo: "푸린", nameEn: "Jigglypuff", types: ["normal", "fairy"], imageUrl: "https://example.com/39.png" },
-  ]),
-  getPokemonChoices: vi.fn().mockImplementation((correct: any) => {
-    const others = [
-      { id: 26, nameKo: "라이츄", nameEn: "Raichu", types: ["electric"], imageUrl: "https://example.com/26.png" },
-      { id: 94, nameKo: "팬텀", nameEn: "Gengar", types: ["ghost"], imageUrl: "https://example.com/94.png" },
-      { id: 143, nameKo: "잠만보", nameEn: "Snorlax", types: ["normal"], imageUrl: "https://example.com/143.png" },
-    ];
-    return [correct, ...others];
-  }),
-  getTypeNameKo: vi.fn().mockImplementation((type: string) => {
-    const map: Record<string, string> = { electric: "전기", fire: "불꽃", water: "물", grass: "풀", normal: "노말", poison: "독", fairy: "페어리" };
-    return map[type] ?? type;
-  }),
-}));
+// Mock PokeAPI — always return deterministic data (keep real GENERATIONS constant)
+vi.mock("@/lib/pokeapi", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/pokeapi")>();
+  return {
+    ...actual,
+    getRandomPokemon: vi.fn().mockResolvedValue([
+      { id: 25, nameKo: "피카츄", nameEn: "Pikachu", types: ["electric"], imageUrl: "https://example.com/25.png" },
+      { id: 4, nameKo: "파이리", nameEn: "Charmander", types: ["fire"], imageUrl: "https://example.com/4.png" },
+      { id: 7, nameKo: "꼬부기", nameEn: "Squirtle", types: ["water"], imageUrl: "https://example.com/7.png" },
+      { id: 1, nameKo: "이상해씨", nameEn: "Bulbasaur", types: ["grass", "poison"], imageUrl: "https://example.com/1.png" },
+      { id: 39, nameKo: "푸린", nameEn: "Jigglypuff", types: ["normal", "fairy"], imageUrl: "https://example.com/39.png" },
+    ]),
+    getPokemonChoices: vi.fn().mockImplementation((correct: any) => {
+      const others = [
+        { id: 26, nameKo: "라이츄", nameEn: "Raichu", types: ["electric"], imageUrl: "https://example.com/26.png" },
+        { id: 94, nameKo: "팬텀", nameEn: "Gengar", types: ["ghost"], imageUrl: "https://example.com/94.png" },
+        { id: 143, nameKo: "잠만보", nameEn: "Snorlax", types: ["normal"], imageUrl: "https://example.com/143.png" },
+      ];
+      return [correct, ...others];
+    }),
+    getTypeNameKo: vi.fn().mockImplementation((type: string) => {
+      const map: Record<string, string> = { electric: "전기", fire: "불꽃", water: "물", grass: "풀", normal: "노말", poison: "독", fairy: "페어리" };
+      return map[type] ?? type;
+    }),
+  };
+});
 
 // ─── Helper: 시작 화면에서 퀴즈 시작 ───
 async function startQuiz(user: ReturnType<typeof userEvent.setup>) {
@@ -404,5 +408,34 @@ describe("QUIZ-012: 홈화면 복귀", () => {
     expect(screen.getByLabelText("포켓볼")).toBeInTheDocument();
     expect(screen.getByText("포켓몬 마스터 퀴즈")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /시작/i })).toBeInTheDocument();
+  });
+});
+
+// ═══════════════════════════════════════════
+// QUIZ-013: 세대 선택
+// ═══════════════════════════════════════════
+
+describe("QUIZ-013: 세대 선택", () => {
+  it("기본값 1세대 → 2세대 클릭 시 부제와 선택 상태 변경", async () => {
+    const user = userEvent.setup();
+    render(<Page />);
+
+    // 기본값: 1세대
+    expect(screen.getByText("1세대 포켓몬 151종")).toBeInTheDocument();
+
+    // 1세대 버튼이 선택된 상태
+    const gen1Button = screen.getByRole("button", { name: /1세대/i });
+    expect(gen1Button).toHaveAttribute("aria-pressed", "true");
+
+    // 2세대 클릭
+    await user.click(screen.getByRole("button", { name: /2세대/i }));
+
+    // 부제 변경
+    expect(screen.getByText("2세대 포켓몬 100종")).toBeInTheDocument();
+    expect(screen.queryByText("1세대 포켓몬 151종")).not.toBeInTheDocument();
+
+    // 2세대 버튼 선택 상태
+    expect(screen.getByRole("button", { name: /2세대/i })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: /1세대/i })).toHaveAttribute("aria-pressed", "false");
   });
 });

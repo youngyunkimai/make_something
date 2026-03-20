@@ -1,12 +1,21 @@
 import type { Pokemon } from "./pokemon";
 
 const POKEAPI_BASE = "https://pokeapi.co/api/v2";
-const GEN1_MAX = 151;
 
-function getRandomIds(count: number, max: number): number[] {
+export const GENERATIONS = {
+  1: { label: "1세대", min: 1, max: 151, count: 151 },
+  2: { label: "2세대", min: 152, max: 251, count: 100 },
+  3: { label: "3세대", min: 252, max: 386, count: 135 },
+  4: { label: "4세대", min: 387, max: 493, count: 107 },
+  5: { label: "5세대", min: 494, max: 649, count: 156 },
+} as const;
+
+export type GenerationKey = keyof typeof GENERATIONS;
+
+function getRandomIds(count: number, min: number, max: number): number[] {
   const ids = new Set<number>();
   while (ids.size < count) {
-    ids.add(Math.floor(Math.random() * max) + 1);
+    ids.add(Math.floor(Math.random() * (max - min + 1)) + min);
   }
   return Array.from(ids);
 }
@@ -27,6 +36,8 @@ const TYPE_NAME_KO: Record<string, string> = {
   rock: "바위",
   ghost: "고스트",
   dragon: "드래곤",
+  dark: "악",
+  steel: "강철",
   fairy: "페어리",
 };
 
@@ -67,8 +78,9 @@ async function fetchPokemonById(id: number): Promise<Pokemon> {
   return { id, nameKo, nameEn, types, imageUrl };
 }
 
-export async function getRandomPokemon(count: number): Promise<Pokemon[]> {
-  const ids = getRandomIds(count, GEN1_MAX);
+export async function getRandomPokemon(count: number, generation: GenerationKey = 1): Promise<Pokemon[]> {
+  const { min, max } = GENERATIONS[generation];
+  const ids = getRandomIds(count, min, max);
   return Promise.all(ids.map(fetchPokemonById));
 }
 

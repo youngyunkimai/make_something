@@ -10,15 +10,22 @@ import {
   type ViewMode,
 } from "./game-frame";
 import { PokeballSvg } from "./pokeball-svg";
+import { GENERATIONS, type GenerationKey } from "@/lib/pokeapi";
+
+const GEN_KEYS = [1, 2, 3, 4, 5] as const satisfies readonly GenerationKey[];
 
 interface StartScreenProps {
   onStart: () => void;
   loading?: boolean;
   viewMode: ViewMode;
   onToggleView: () => void;
+  generation: GenerationKey;
+  onSelectGeneration: (gen: GenerationKey) => void;
 }
 
-export function StartScreen({ onStart, loading, viewMode, onToggleView }: StartScreenProps) {
+export function StartScreen({ onStart, loading, viewMode, onToggleView, generation, onSelectGeneration }: StartScreenProps) {
+  const currentGen = GENERATIONS[generation];
+
   return (
     <GameFrame viewMode={viewMode} onToggleView={onToggleView}>
       <BattleField className="flex-1 gap-4">
@@ -29,7 +36,7 @@ export function StartScreen({ onStart, loading, viewMode, onToggleView }: StartS
         <div className="text-center">
           <h1 className="text-xl font-bold">포켓몬 마스터 퀴즈</h1>
           <p className="text-xs text-muted-foreground mt-1">
-            1세대 포켓몬 151종
+            {currentGen.label} 포켓몬 {currentGen.count}종
           </p>
         </div>
       </BattleField>
@@ -42,6 +49,29 @@ export function StartScreen({ onStart, loading, viewMode, onToggleView }: StartS
           <p className="text-xs text-muted-foreground mt-1">
             5문제 / 4지선다 / 힌트 3회
           </p>
+
+          {/* Generation selector */}
+          <div className="flex gap-1 mt-3" role="group" aria-label="세대 선택">
+            {GEN_KEYS.map((key) => {
+              const gen = GENERATIONS[key];
+              const isSelected = generation === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  aria-pressed={isSelected}
+                  onClick={() => onSelectGeneration(key)}
+                  className={`flex-1 py-1 text-xs rounded border cursor-pointer transition-colors ${
+                    isSelected
+                      ? "border-primary bg-primary/10 font-bold text-primary"
+                      : "border-border bg-card text-muted-foreground hover:bg-accent"
+                  }`}
+                >
+                  {gen.label}
+                </button>
+              );
+            })}
+          </div>
         </TextBox>
 
         <button
