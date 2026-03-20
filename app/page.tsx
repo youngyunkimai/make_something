@@ -1,6 +1,6 @@
 "use client";
 
-import { useReducer, useCallback, useRef, useState } from "react";
+import { useReducer, useCallback, useRef, useState, useEffect } from "react";
 import { quizReducer, initialState, getAvailableScore } from "@/lib/quiz-reducer";
 import { getRandomPokemon, getPokemonChoices, type GenerationKey } from "@/lib/pokeapi";
 import type { Pokemon } from "@/lib/pokemon";
@@ -17,6 +17,10 @@ export default function Page() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("mobile");
   const [generation, setGeneration] = useState<GenerationKey>(1);
+
+  useEffect(() => {
+    setViewMode(window.innerWidth >= 768 ? "desktop" : "mobile");
+  }, []);
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const toggleView = useCallback(() => {
