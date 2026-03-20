@@ -12,7 +12,7 @@ import {
 import { PokeballSvg } from "./pokeball-svg";
 import { GENERATIONS, type GenerationKey } from "@/lib/pokeapi";
 
-const GEN_KEYS = [1, 2, 3, 4, 5] as const satisfies readonly GenerationKey[];
+const GEN_KEYS = [1, 2, 3, 4, 5, "all"] as const satisfies readonly GenerationKey[];
 
 interface StartScreenProps {
   onStart: () => void;

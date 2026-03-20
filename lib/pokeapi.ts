@@ -8,6 +8,7 @@ export const GENERATIONS = {
   3: { label: "3세대", min: 252, max: 386, count: 135 },
   4: { label: "4세대", min: 387, max: 493, count: 107 },
   5: { label: "5세대", min: 494, max: 649, count: 156 },
+  all: { label: "랜덤", min: 1, max: 649, count: 649 },
 } as const;
 
 export type GenerationKey = keyof typeof GENERATIONS;
